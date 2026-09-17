@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSI Student Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>HSI Student Management</h1>
+
+        <form id="studentForm">
+            <input type="text" id="name" placeholder="Nama siswa">
+            <input type="number" id="score" placeholder="Nilai">
+
+            <button type="submit" id="submitButton">
+                ➕ Tambah Siswa
+            </button>
+        </form>
+
+        <div id="alertMessage"></div>
+
+        <div class="stats">
+            <div>
+                <p>Total Siswa</p>
+                <h2 id="totalStudents">0</h2>
+            </div>
+
+            <div>
+                <p>Rata-rata Nilai</p>
+                <h2 id="averageScore">0</h2>
+            </div>
+        </div>
+
+        <h2>📋 Daftar Siswa</h2>
+
+        <div id="studentList"></div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
