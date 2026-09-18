@@ -1,15 +1,13 @@
 let students = JSON.parse(localStorage.getItem("students")) || [];
+
 let editId = null;
 
 const form = document.getElementById("studentForm");
-const nameInput = document.getElementById("name");
-const scoreInput = document.getElementById("score");
-const submitButton = document.getElementById("submitButton");
-
+const nameInput = document.getElementById("studentName");
+const scoreInput = document.getElementById("studentScore");
 const studentList = document.getElementById("studentList");
 const totalStudents = document.getElementById("totalStudents");
 const averageScore = document.getElementById("averageScore");
-const alertMessage = document.getElementById("alertMessage");
 
 
 function saveStudents() {
@@ -17,37 +15,40 @@ function saveStudents() {
 }
 
 
-function showAlert(message) {
-    alertMessage.textContent = message;
-
-    setTimeout(function() {
-        alertMessage.textContent = "";
-    }, 3000);
-}
-
-
 function renderStudents() {
     studentList.innerHTML = "";
 
     if (students.length === 0) {
-        studentList.innerHTML = "<p>Belum ada siswa.</p>";
+        studentList.innerHTML = `
+            <div class="empty">
+                Belum ada data siswa.
+            </div>
+        `;
     }
 
     for (let i = 0; i < students.length; i++) {
         let student = students[i];
 
         studentList.innerHTML += `
-            <div class="student-card">
-                <h3>${i + 1}. ${student.name}</h3>
-                <p>Nilai: ${student.score}</p>
+            <div class="student-item">
+                <div class="student-name">
+                    <span class="student-number">${i + 1}.</span>
+                    ${student.name}
+                </div>
 
-                <button onclick="editStudent(${student.id})">
-                    ✏️ Ubah
-                </button>
+                <div class="score">
+                    ${student.score}
+                </div>
 
-                <button onclick="deleteStudent(${student.id})">
-                    🗑️ Hapus
-                </button>
+                <div>
+                    <button onclick="editStudent(${student.id})">
+                        ✏️ Ubah
+                    </button>
+
+                    <button class="delete-btn" onclick="deleteStudent(${student.id})">
+                        🗑️ Hapus
+                    </button>
+                </div>
             </div>
         `;
     }
@@ -67,7 +68,7 @@ function updateStats() {
     let total = 0;
 
     for (let i = 0; i < students.length; i++) {
-        total += Number(students[i].score);
+        total += students[i].score;
     }
 
     let average = total / students.length;
@@ -80,27 +81,27 @@ form.addEventListener("submit", function(event) {
     event.preventDefault();
 
     let name = nameInput.value.trim();
-    let score = scoreInput.value;
+    let score = Number(scoreInput.value);
 
-    if (name === "" || score === "") {
+    if (name === "" || scoreInput.value === "") {
         alert("Nama dan nilai harus diisi!");
         return;
     }
 
     if (editId === null) {
 
-        let newStudent = {
+        let student = {
             id: Date.now(),
             name: name,
-            score: Number(score)
+            score: score
         };
 
-        students.push(newStudent);
+        students.push(student);
 
         saveStudents();
         renderStudents();
 
-        showAlert(`✅ Data siswa ${name} berhasil ditambahkan.`);
+        alert(`Data siswa ${name} berhasil ditambahkan.`);
 
     } else {
 
@@ -108,7 +109,7 @@ form.addEventListener("submit", function(event) {
 
             if (students[i].id === editId) {
                 students[i].name = name;
-                students[i].score = Number(score);
+                students[i].score = score;
                 break;
             }
 
@@ -117,10 +118,10 @@ form.addEventListener("submit", function(event) {
         saveStudents();
         renderStudents();
 
-        showAlert(`🔄 Data siswa ${name} berhasil diperbarui.`);
+        alert(`Data siswa ${name} berhasil diperbarui.`);
 
         editId = null;
-        submitButton.textContent = "➕ Tambah Siswa";
+        form.querySelector("button").textContent = "➕ Tambah Siswa";
     }
 
     form.reset();
@@ -138,7 +139,7 @@ function editStudent(id) {
 
             editId = id;
 
-            submitButton.textContent = "💾 Update Siswa";
+            form.querySelector("button").textContent = "💾 Update Siswa";
 
             break;
         }
@@ -162,7 +163,7 @@ function deleteStudent(id) {
         `Apakah kamu yakin ingin menghapus siswa ${studentName}?`
     );
 
-    if (yakin === false) {
+    if (!yakin) {
         return;
     }
 
@@ -173,7 +174,7 @@ function deleteStudent(id) {
     saveStudents();
     renderStudents();
 
-    showAlert(`🗑️ Data siswa ${studentName} berhasil dihapus.`);
+    alert(`Data siswa ${studentName} berhasil dihapus.`);
 }
 
 
